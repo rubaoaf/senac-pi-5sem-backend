@@ -1,3 +1,5 @@
+const sha256 = require('crypto-js/sha256');
+
 const models = require('../database/models');
 
 const cadastraAgendamento = async (req, res) => {
@@ -77,7 +79,10 @@ const alteraAgendamento = async (req, res) => {
 
 const cadastraUsuario = async (req, res) => {
     try {
-        const user = await models.Usuario.create(req.body);
+        const {senha} = req.body;
+        const reqDefault = req.body
+        const cyptoSenha = {senha: String(sha256(senha))};
+        const user = await models.Usuario.create({...reqDefault, ...cyptoSenha});
         res.status(201).json(user);
     } catch (error) {
         const user_obj = Object.keys(models.Usuario.rawAttributes)
@@ -127,7 +132,9 @@ const loginUsuario = async (req, res, next) => {
                 email: email            }
         });
         if(user) {
-            const validPass = String(user.senha) === senha;
+            console.log('String(sha256(senha)): ', String(sha256(senha)))
+            console.log('user.senha: ', user.senha)
+            const validPass = String(sha256(senha)) === user.senha;
             if(validPass) {
                 return res.status(200).json({id: user.id, nomeCompleto: user.nomeCompleto});
             }
