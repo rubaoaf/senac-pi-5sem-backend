@@ -20,4 +20,6 @@ router.post('/usuario', controllers.cadastraUsuario)
 
 router.put('/usuario/:userId', controllers.alteraUsuario)
 
+router.post('/auth', controllers.loginUsuario)
+
 module.exports = router;

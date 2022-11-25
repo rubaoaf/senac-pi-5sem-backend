@@ -119,6 +119,27 @@ const alteraUsuario = async (req, res) => {
     return res.status(404).send(new Error('Usuario não encontrado'));
 }
 
+const loginUsuario = async (req, res, next) => {
+    try {
+        const { email, senha } = req.body;
+        const user = await models.Usuario.findOne({
+            where: {
+                email: email            }
+        });
+        if(user) {
+            const validPass = String(user.senha) === senha;
+            if(validPass) {
+                return res.status(200).json({id: user.id, nomeCompleto: user.nomeCompleto});
+            }
+            return res.status(401).json('Usuário ou senha invalida');
+        }
+
+    } catch (error) {
+        throw new Error('Server error')
+
+    }
+}
+
 module.exports = {
     cadastraAgendamento,
     listaAgendamentos,
@@ -126,4 +147,5 @@ module.exports = {
     alteraAgendamento,
     cadastraUsuario,
     alteraUsuario,
+    loginUsuario
 }
