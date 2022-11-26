@@ -79,11 +79,18 @@ const alteraAgendamento = async (req, res) => {
 
 const cadastraUsuario = async (req, res) => {
     try {
-        const {senha} = req.body;
+        const {senha, email} = req.body;
         const reqDefault = req.body
         const cyptoSenha = {senha: String(sha256(senha))};
-        const user = await models.Usuario.create({...reqDefault, ...cyptoSenha});
-        res.status(201).json(user);
+        const checkEmail = await models.Usuario.findOne({
+            email: email
+        })
+        if (!checkEmail) {
+            const user = await models.Usuario.create({...reqDefault, ...cyptoSenha});
+            res.status(201).json(user);    
+        } else {
+            res.status(400).json({message: 'Usuário já cadastrado'})
+        }
     } catch (error) {
         const user_obj = Object.keys(models.Usuario.rawAttributes)
 
@@ -107,10 +114,13 @@ const cadastraUsuario = async (req, res) => {
     }
 }
 
-const alteraUsuario = async (req, res) => {
+const alteraSenha = async (req, res) => {
     const userId = req.params.userId;
+    const { senha } = req.body;
+    const cyptoSenha = {senha: String(sha256(senha))};
+
     const [ user_edit ] = await models.Usuario.update(
-        req.body,
+        cyptoSenha,
         {
             where: {
                 id: userId
@@ -118,8 +128,27 @@ const alteraUsuario = async (req, res) => {
         }
     );
     if (user_edit) {
-        const editedUser = await models.Usuario.findByPk(userId);
-        return res.status(200).json(editedUser);
+        return res.status(200).json('Atualizado com sucesso');
+    }
+    return res.status(404).send(new Error('Usuario não encontrado'));
+}
+
+const alteraUsuario = async (req, res) => {
+    const userId = req.params.userId;
+    const reqDefault = req.body
+    const { senha } = req.body;
+    const cyptoSenha = {senha: String(sha256(senha))};
+
+    const [ user_edit ] = await models.Usuario.update(
+        {...reqDefault, ...cyptoSenha},
+        {
+            where: {
+                id: userId
+            }
+        }
+    );
+    if (user_edit) {
+        return res.status(200).json('Atualizado com sucesso');
     }
     return res.status(404).send(new Error('Usuario não encontrado'));
 }
@@ -132,8 +161,6 @@ const loginUsuario = async (req, res, next) => {
                 email: email            }
         });
         if(user) {
-            console.log('String(sha256(senha)): ', String(sha256(senha)))
-            console.log('user.senha: ', user.senha)
             const validPass = String(sha256(senha)) === user.senha;
             if(validPass) {
                 return res.status(200).json({id: user.id, nomeCompleto: user.nomeCompleto});
@@ -147,6 +174,24 @@ const loginUsuario = async (req, res, next) => {
     }
 }
 
+const validaUsuario = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+        const user = await models.Usuario.findOne({
+            where: {
+                email: email            }
+        });
+        if(user) {
+            return res.status(200).json({id: user.id});
+        } else {
+            return res.status(404).json('Usuário não encontrado');
+        }
+    } catch (error) {
+        throw new Error('Server error')
+
+    }
+}
+
 module.exports = {
     cadastraAgendamento,
     listaAgendamentos,
@@ -154,5 +199,7 @@ module.exports = {
     alteraAgendamento,
     cadastraUsuario,
     alteraUsuario,
-    loginUsuario
+    loginUsuario,
+    validaUsuario,
+    alteraSenha
 }
