@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Agendamento.init({
     idUsuario: DataTypes.INTEGER,
     nomeCliente: DataTypes.STRING,
+    telefoneCliente: DataTypes.STRING,
     dataAgendada: DataTypes.DATE,
     horarioAgendado: DataTypes.DATE,
     observacao: DataTypes.TEXT,

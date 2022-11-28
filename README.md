@@ -63,6 +63,7 @@ Agora só rodar o projeto com o comando
     body: {
         "idUsuario": "1",
         "nomeCliente": "nome",
+        "telefoneCliente": "(11) 11111-1111",
         "dataAgendada": "2022-11-31 20:00:00.000 -0300",
         "horarioAgendado": "2022-11-31 20:00:00.000 -0300",
         "observacao": "",
@@ -73,6 +74,7 @@ Agora só rodar o projeto com o comando
     body: {
         "idUsuario": "1",
         "nomeCliente": "nome",
+        "telefoneCliente": "(11) 11111-1111",
         "dataAgendada": "2022-11-31 20:00:00.000 -0300",
         "horarioAgendado": "2022-11-31 20:00:00.000 -0300",
         "observacao": "",

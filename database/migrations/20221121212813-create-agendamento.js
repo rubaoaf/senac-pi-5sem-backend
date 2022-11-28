@@ -15,6 +15,9 @@ module.exports = {
       nomeCliente: {
         type: Sequelize.STRING
       },
+      telefoneCliente: {
+        type: Sequelize.STRING
+      },
       dataAgendada: {
         type: Sequelize.DATE
       },
