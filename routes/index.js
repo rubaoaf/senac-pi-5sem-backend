@@ -19,9 +19,9 @@ router.put('/agendamento/:schedulingId', controllers.alteraAgendamento)
 
 router.post('/usuario', controllers.cadastraUsuario)
 
-router.put('/usuario/:userId', controllers.alteraUsuario)
+router.patch('/usuario/:userId', controllers.alteraUsuario)
 
-router.put('/usuario/:userId', controllers.alteraSenha)
+router.patch('/usuario/:userId', controllers.alteraSenha)
 
 router.post('/recover/', controllers.validaUsuario)
 
